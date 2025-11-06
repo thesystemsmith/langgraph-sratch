@@ -46,9 +46,16 @@ graph_builder.add_conditional_edges("chatbot", tools_condition)
 # After any tool call, go back to chatbot
 graph_builder.add_edge("tools", "chatbot")
 
+
+# create memory 
+from langgraph.checkpoint.memory import MemorySaver
+memory = MemorySaver()
+
 # compile
 graph_builder.set_entry_point("chatbot")
-graph = graph_builder.compile()
+graph = graph_builder.compile(checkpointer = memory)
+
+config = {"configurable": {"thread_id": "1"}}
 
 # ----- Simple REPL -----
 if __name__ == "__main__":
@@ -59,7 +66,7 @@ if __name__ == "__main__":
             print("Bye")
             break
         # LangGraph expects tuples like ("user", text)
-        for event in graph.stream({"messages": [("user", user_input)]}):
+        for event in graph.stream({"messages": [("user", user_input)]}, config):
             for value in event.values():
                 msg = value["messages"][-1]
                 # msg is a BaseMessage; print its content
