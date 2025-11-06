@@ -55,11 +55,11 @@ memory = MemorySaver()
 graph_builder.set_entry_point("chatbot")
 graph = graph_builder.compile(checkpointer = memory)
 
-config = {"configurable": {"thread_id": "1"}}
 
 # ----- Simple REPL -----
 if __name__ == "__main__":
     print("Type 'exit' to quit.")
+    config = {"configurable": {"thread_id": "1"}}
     while True:
         user_input = input("User: ")
         if user_input.lower() in {"exit", "quit", "q"}:
